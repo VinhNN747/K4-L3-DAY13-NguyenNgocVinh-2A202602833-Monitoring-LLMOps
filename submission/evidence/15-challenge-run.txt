@@ -1,0 +1,13 @@
+Challenge: day13-k4-l3a-monitoring-llmops-v1
+Cohort: K4
+Incident: rag_slow
+Affected feature: monitoring
+Latency threshold: 2000 ms
+Command: python scripts/inject_incident.py; python scripts/load_test.py --challenge --concurrency 5
+Challenge correlations:
+- req-983b8514 | k4-l3a-challenge-s01 | latency 4708 ms
+- req-a5f65be0 | k4-l3a-challenge-s03 | latency 4670 ms
+- req-2e2573b7 | k4-l3a-challenge-s04 | latency 4659 ms
+- req-5768ed3a | k4-l3a-challenge-s05 | latency 4676 ms
+- req-096aec2a | k4-l3a-challenge-s02 | latency 4667 ms
+Metrics: latency P95 4708 ms, P99 4708 ms, TTFT P95 51 ms, retrieval success 100%.

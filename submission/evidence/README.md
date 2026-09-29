@@ -1,5 +1,7 @@
 # Evidence cá nhân
 
+Hướng dẫn thực hiện đầy đủ CP1–CP4: [docs/CP1_CP4_EVIDENCE.md](../../docs/CP1_CP4_EVIDENCE.md).
+
 Đặt ảnh hoặc output text dùng để chấm vào thư mục này. Danh sách đầy đủ xem tại [docs/SUBMISSION.md](../../docs/SUBMISSION.md).
 
 Tên file gợi ý:
@@ -32,3 +34,5 @@ Từ `submission/REPORT.md`, dẫn ảnh bằng đường dẫn tương đối:
 ```
 
 Không commit secret, API key, PII thô hoặc evidence của học viên/lớp khác.
+
+Runtime handoff hiện có đủ 14 file projection dạng .txt từ CP1–CP4; REPORT.md trỏ trực tiếp tới các file này. Nếu LMS bắt buộc ảnh giao diện, học viên có thể chụp lại từ các output/trace ID đã ghi mà không đưa raw payload, PII hoặc secret vào ảnh.

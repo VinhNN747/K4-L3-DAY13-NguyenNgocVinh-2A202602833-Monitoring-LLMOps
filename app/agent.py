@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import time
+from contextlib import nullcontext
 from dataclasses import dataclass
 
 from . import metrics
@@ -51,7 +52,17 @@ class LabAgent:
             },
         ):
             started = time.perf_counter()
-            docs = retrieve(message)
+            retrieval_context = (
+                langfuse_client.start_as_current_observation(
+                name="retrieve", as_type="retriever",
+                input={"query_preview": summarize_text(message)},
+                metadata={"query_preview": summarize_text(message)},
+                ) if hasattr(langfuse_client, "start_as_current_observation")
+                else nullcontext(_NoopObservation())
+            )
+            with retrieval_context as retrieval_observation:
+                docs = retrieve(message)
+                retrieval_observation.update(output={"doc_count": len(docs), "success": True})
             prompt = resolve_prompt(
                 langfuse_client,
                 feature=feature,
@@ -71,10 +82,28 @@ class LabAgent:
                 },
                 version=prompt.version,
             )
-            # TODO (CP2): instrument retrieve() and FakeLLM.generate() as child
-            # observations. The nested generation must receive prompt, usage and cost.
             with propagate_attributes(prompt=prompt.managed_prompt):
-                response = self.llm.generate(prompt.text)
+                generation_context = (
+                    langfuse_client.start_as_current_observation(
+                    name="llm-generate", as_type="generation", model=self.model,
+                    input={
+                        "prompt_name": prompt.name,
+                        "prompt_label": prompt.label,
+                        "prompt_version": prompt.version,
+                        "prompt_preview": summarize_text(prompt.text),
+                    },
+                    prompt=prompt.managed_prompt, metadata={"prompt_version": prompt.version},
+                    ) if hasattr(langfuse_client, "start_as_current_observation")
+                    else nullcontext(_NoopObservation())
+                )
+                with generation_context as generation:
+                    response = self.llm.generate(prompt.text)
+                    generation.update(
+                        usage_details={"input": response.usage.input_tokens, "output": response.usage.output_tokens},
+                        cost_details={"input": (response.usage.input_tokens / 1_000_000) * 3,
+                                      "output": (response.usage.output_tokens / 1_000_000) * 15},
+                        output={"output_preview": summarize_text(response.text)},
+                    )
             quality_score = self._heuristic_quality(message, response.text, docs)
             latency_ms = int((time.perf_counter() - started) * 1000)
             cost_usd = self._estimate_cost(response.usage.input_tokens, response.usage.output_tokens)
@@ -97,7 +126,6 @@ class LabAgent:
             cost_usd=cost_usd,
             quality_score=quality_score,
         )
-
     def _estimate_cost(self, tokens_in: int, tokens_out: int) -> float:
         input_cost = (tokens_in / 1_000_000) * 3
         output_cost = (tokens_out / 1_000_000) * 15
@@ -114,3 +142,8 @@ class LabAgent:
         if "[REDACTED" in answer:
             score -= 0.2
         return round(max(0.0, min(1.0, score)), 2)
+
+
+class _NoopObservation:
+    def update(self, **kwargs) -> None:
+        return None

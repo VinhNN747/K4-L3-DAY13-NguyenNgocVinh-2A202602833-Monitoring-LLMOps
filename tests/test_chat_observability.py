@@ -40,3 +40,16 @@ def test_chat_response_log_exposes_quality_for_dashboard(
     assert response_event["ttft_ms"] == response.json()["ttft_ms"]
     assert response_event["tool_name"] == "retrieval"
     assert response_event["tool_success"] is True
+
+
+def test_correlation_header_is_preserved_and_response_time_is_returned() -> None:
+    async def send_request() -> httpx.Response:
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            return await client.get("/health", headers={"x-request-id": "req-a1b2c3d4"})
+
+    response = asyncio.run(send_request())
+
+    assert response.status_code == 200
+    assert response.headers["x-request-id"] == "req-a1b2c3d4"
+    assert float(response.headers["x-response-time-ms"]) >= 0
