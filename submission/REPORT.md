@@ -18,20 +18,20 @@
 
 | Evidence | Đường dẫn |
 |---|---|
-| Pytest cuối | evidence/01-pytest.txt |
-| Log validator | evidence/02-log-validator.txt |
-| Dashboard validator | evidence/03-dashboard-validator.txt |
-| Structured log | evidence/04-structured-log.txt |
-| PII redaction | evidence/05-pii-redaction.txt |
-| Trace list | evidence/06-trace-list.txt |
-| Trace waterfall | evidence/07-trace-waterfall.txt |
-| Trace metadata | evidence/08-trace-metadata.txt |
-| Prompt versions | evidence/09-prompt-versions.txt |
-| Prompt rollback | evidence/10-prompt-rollback.txt |
-| Dashboard runtime | evidence/11-dashboard-overview.txt |
-| Incident metric | evidence/12-incident-metric.txt |
-| Incident log | evidence/13-incident-log.txt |
-| Incident trace | evidence/14-incident-trace.txt |
+| Pytest cuối | evidence/01-pytest.png |
+| Log validator | evidence/02-log-validator.png |
+| Dashboard validator | evidence/03-dashboard-validator.png |
+| Structured log | evidence/04-structured-log.png |
+| PII redaction | evidence/05-pii-redaction.png |
+| Trace list | evidence/06-trace-list.png |
+| Trace waterfall | evidence/07-trace-waterfall.png |
+| Trace metadata | evidence/08-trace-metadata.png |
+| Prompt versions | evidence/09-prompt-versions.png |
+| Prompt rollback | evidence/10-prompt-rollback.png |
+| Dashboard runtime | evidence/11-dashboard-overview.png |
+| Incident metric | evidence/12-incident-metric.png |
+| Incident log | evidence/13-incident-log.png |
+| Incident trace | evidence/14-incident-trace.png |
 | Challenge run | evidence/15-challenge-run.txt |
 
 ## 3. Kết quả kỹ thuật
